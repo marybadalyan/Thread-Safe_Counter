@@ -5,6 +5,8 @@ name: CMake on multiple platforms
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'  # Ignore changes to README.md
   pull_request:
     branches: [ "main" ]
 
