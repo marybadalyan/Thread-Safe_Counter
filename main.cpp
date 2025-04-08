@@ -3,11 +3,10 @@
 #include <thread>
 #include <vector>
 #include <chrono>
-
-// Assuming kaizen.h provides zen::print and zen::cmd_args
+#include <format>
 #include "kaizen.h"
 
-// Parse command-line arguments
+
 std::pair<int, int> process_args(int argc, char* argv[]) {
     zen::cmd_args args(argv, argc);
     auto threadCount_options = args.get_options("--threads");
@@ -15,7 +14,7 @@ std::pair<int, int> process_args(int argc, char* argv[]) {
 
     int threads = 3, iters = 1000000; // Default values
     if (threadCount_options.empty() || iter_options.empty()) {
-        zen::print("Error: Missing --threads or --iterations, using defaults: threads=3, iterations=1,000,000\n");
+        zen::print("Error: Missing --threads or --iterations, using defaults: threads=3, iterations=1000000\n");
     } else {
         threads = std::stoi(threadCount_options[0]);
         iters = std::stoi(iter_options[0]);
@@ -39,13 +38,13 @@ int main(int argc, char* argv[]) {
     // Sampling thread to periodically print counter values
     std::thread sampler([&]() {
         while (running.load()) {
-            zen::print("\nSampled Values:\n");
-            zen::print("Non-Atomic: ", non_atomic_counter, "\n");
-            zen::print("SeqCst: ", seq_counter.load(), "\n");
-            zen::print("Relaxed: ", relaxed_counter.load(), "\n");
-            zen::print("Release: ", release_counter.load(), "\n");
-            zen::print("Acquire: ", acquire_counter.load(), "\n");
-            std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Sample every 200ms
+            zen::print(std::format("\nSampled Values:\n"));
+            zen::print(std::format("| {:<15} | {:>5}|\n","Non-Atomic:", non_atomic_counter));
+            zen::print(std::format("| {:<15} | {:>5}|\n","SeqCst:", seq_counter.load()));
+            zen::print(std::format("| {:<15} | {:>5}|\n","Relaxed:", relaxed_counter.load()));
+            zen::print(std::format("| {:<15} | {:>5}|\n","Release:", release_counter.load()));
+            zen::print(std::format("| {:<15} | {:>5}|\n","Acquire:", acquire_counter.load()));
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Sample every 50ms
         }
     });
 
@@ -108,13 +107,12 @@ int main(int argc, char* argv[]) {
     int expected = thread_count * iterations;
 
     // Print final results
-    zen::print("\nFinal Counter Values:\n");
-    zen::print("Non-Atomic: ", non_atomic_counter, "\n");
-    zen::print("SeqCst: ", seq_counter.load(), "\n");
-    zen::print("Relaxed: ", relaxed_counter.load(), "\n");
-    zen::print("Release: ", release_counter.load(), "\n");
-    zen::print("Acquire: ", acquire_counter.load(), "\n");
-    zen::print("Expected: ", expected, "\n");
-
+    zen::print(std::format("\nFinal Counter Values:\n"));
+    zen::print(std::format("| {:<15} | {:>5}|\n","Non-Atomic:", non_atomic_counter));
+    zen::print(std::format("| {:<15} | {:>5}|\n","SeqCst:", seq_counter.load()));
+    zen::print(std::format("| {:<15} | {:>5}|\n","Relaxed:", relaxed_counter.load()));
+    zen::print(std::format("| {:<15} | {:>5}|\n","Release:", release_counter.load()));
+    zen::print(std::format("| {:<15} | {:>5}|\n","Acquire:", acquire_counter.load()));
+    zen::print(std::format("| {:<15} | {:>5}|\n","Expected:", expected));
     return 0;
 }
