@@ -39,11 +39,11 @@ int main(int argc, char* argv[]) {
     std::thread sampler([&]() {
         while (running.load()) {
             zen::print(std::format("\nSampled Values:\n"));
-            zen::print(std::format("| {:<15} | {:>5}|\n","Non-Atomic:", non_atomic_counter));
-            zen::print(std::format("| {:<15} | {:>5}|\n","SeqCst:", seq_counter.load()));
-            zen::print(std::format("| {:<15} | {:>5}|\n","Relaxed:", relaxed_counter.load()));
-            zen::print(std::format("| {:<15} | {:>5}|\n","Release:", release_counter.load()));
-            zen::print(std::format("| {:<15} | {:>5}|\n","Acquire:", acquire_counter.load()));
+            zen::print(std::format("| {:<17} | {:>7}|\n","Non-Atomic:", non_atomic_counter));
+            zen::print(std::format("| {:<17} | {:>7}|\n","SeqCst:", seq_counter.load()));
+            zen::print(std::format("| {:<17} | {:>7}|\n","Relaxed:", relaxed_counter.load()));
+            zen::print(std::format("| {:<17} | {:>7}|\n","Release:", release_counter.load()));
+            zen::print(std::format("| {:<17} | {:>7}|\n","Acquire:", acquire_counter.load()));
             std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Sample every 50ms
         }
     });
@@ -108,11 +108,11 @@ int main(int argc, char* argv[]) {
 
     // Print final results
     zen::print(std::format("\nFinal Counter Values:\n"));
-    zen::print(std::format("| {:<15} | {:>5}|\n","Non-Atomic:", non_atomic_counter));
-    zen::print(std::format("| {:<15} | {:>5}|\n","SeqCst:", seq_counter.load()));
-    zen::print(std::format("| {:<15} | {:>5}|\n","Relaxed:", relaxed_counter.load()));
-    zen::print(std::format("| {:<15} | {:>5}|\n","Release:", release_counter.load()));
-    zen::print(std::format("| {:<15} | {:>5}|\n","Acquire:", acquire_counter.load()));
-    zen::print(std::format("| {:<15} | {:>5}|\n","Expected:", expected));
+    zen::print(std::format("| {:<17} | {:>7}|\n","Non-Atomic:", non_atomic_counter));
+    zen::print(std::format("| {:<17} | {:>7}|\n","SeqCst:", seq_counter.load()));
+    zen::print(std::format("| {:<17} | {:>7}|\n","Relaxed:", relaxed_counter.load()));
+    zen::print(std::format("| {:<17} | {:>7}|\n","Release:", release_counter.load()));
+    zen::print(std::format("| {:<17} | {:>7}|\n","Acquire:", acquire_counter.load()));
+    zen::print(std::format("| {:<17} | {:>7}|\n","Expected:", expected));
     return 0;
 }
