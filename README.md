@@ -84,19 +84,47 @@ Below is sample output from running the program with ` --iterations 1000000`:
 ```
 
 Sampled Values:
-Non-Atomic:  0
-SeqCst:  1000
-Relaxed:  2000
-Release:  2000
-Acquire:  2000
+| Non-Atomic:     |     0|
+| SeqCst:         |     0|
+| Relaxed:        |     0|
+| Release:        |     0|
+| Acquire:        |     0|
+
+Sampled Values:
+| Non-Atomic:     | 1363985|
+| SeqCst:         | 1697160|
+| Relaxed:        | 1227450|
+| Release:        | 1112271|
+| Acquire:        | 399316|
+
+Sampled Values:
+| Non-Atomic:     | 1681538|
+| SeqCst:         | 2561931|
+| Relaxed:        | 1648042|
+| Release:        | 1653892|
+| Acquire:        | 1069482|
+
+Sampled Values:
+| Non-Atomic:     | 2048422|
+| SeqCst:         | 2806989|
+| Relaxed:        | 2405822|
+| Release:        | 2114956|
+| Acquire:        | 1569518|
+
+Sampled Values:
+| Non-Atomic:     | 2048422|
+| SeqCst:         | 3000000|
+| Relaxed:        | 3000000|
+| Release:        | 3000000|
+| Acquire:        | 2118648|
 
 Final Counter Values:
-Non-Atomic:  3000
-SeqCst:  3000
-Relaxed:  3000
-Release:  3000
-Acquire:  3000
-Expected:  3000
+| Non-Atomic:     | 2048422|
+| SeqCst:         | 3000000|
+| Relaxed:        | 3000000|
+| Release:        | 3000000|
+| Acquire:        | 3000000|
+| Expected:       | 3000000|
 ```
 
 v
