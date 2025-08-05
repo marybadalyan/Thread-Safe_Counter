@@ -27,7 +27,7 @@ jobs:
       # This step should succeed, as TSan is not active for MSVC.
       # The executable for Visual Studio generators is inside a subdirectory named after the build type.
       # NOTE: Replace 'YourAppName' with your actual executable name!
-      run: ./build/Debug/YourAppName.exe --threads 4 --iterations 500000
+      run: ./build/Debug/main.exe --threads 4 --iterations 500000
 
 
   # --- JOB 2: Build and run on Linux with GCC and ThreadSanitizer ---
@@ -50,4 +50,4 @@ jobs:
       # This step SHOULD FAIL. A failure here means TSan is working correctly!
       # The executable for single-config generators is directly in the build folder.
       # NOTE: Replace 'YourAppName' with your actual executable name!
-      run: ./build/YourAppName --threads 4 --iterations 500000
+      run: ./build/main --threads 4 --iterations 500000
