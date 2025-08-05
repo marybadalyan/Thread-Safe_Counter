@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
         threads.emplace_back([&]() {
             for (int i = 0; i < iterations; ++i) {
                 non_atomic_counter++; // Race condition here
+
+                std::this_thread::yield();
             }
         });
     }
