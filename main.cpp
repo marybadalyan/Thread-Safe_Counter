@@ -6,6 +6,9 @@
 #include <format>
 #include "kaizen.h"
 
+extern "C" const char* __tsan_default_options() {
+  return "verbosity=1";
+}
 
 std::pair<int, int> process_args(int argc, char* argv[]) {
     zen::cmd_args args(argv, argc);
