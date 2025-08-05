@@ -7,7 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # --- JOB 1: Build and run on Windows using the default MSVC compiler ---
+
+  # --- JOB 1: Windows build (no TSan) ---
   build_windows:
     runs-on: windows-latest
 
@@ -15,22 +16,17 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Configure CMake
-      # This will use the default MSVC compiler. We'll use a Debug build.
+    - name: Configure CMake (MSVC)
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug .
 
-    - name: Build
-      # The --config flag is needed for multi-config generators like Visual Studio
+    - name: Build (MSVC)
       run: cmake --build build --config Debug
 
-    - name: Run on Windows (Expect Success)
-      # This step should succeed, as TSan is not active for MSVC.
-      # The executable for Visual Studio generators is inside a subdirectory named after the build type.
-      # NOTE: Replace 'YourAppName' with your actual executable name!
+    - name: Run executable (MSVC)
       run: ./build/Debug/main.exe --threads 4 --iterations 500000
 
 
-  # --- JOB 2: Build and run on Linux with GCC and ThreadSanitizer ---
+  # --- JOB 2: Linux build with TSan ---
   build_linux_with_tsan:
     runs-on: ubuntu-latest
 
@@ -38,16 +34,18 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Configure CMake
-      # This will use the default GCC compiler. Your CMakeLists.txt should add
-      # the TSan flags automatically for this compiler in a Debug build.
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug .
+    - name: Install GCC (optional, usually pre-installed)
+      run: sudo apt-get update && sudo apt-get install -y g++ cmake
 
-    - name: Build
-      run: cmake --build build --config Debug
+    - name: Configure CMake with TSan flags
+      run: >
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        -DCMAKE_CXX_FLAGS="-fsanitize=thread -g -O1"
+        -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread -pthread"
+        .
 
-    - name: Run with TSan (Expect Failure)
-      # This step SHOULD FAIL. A failure here means TSan is working correctly!
-      # The executable for single-config generators is directly in the build folder.
-      # NOTE: Replace 'YourAppName' with your actual executable name!
+    - name: Build with TSan
+      run: cmake --build build
+
+    - name: Run with TSan (expect race detection)
       run: ./build/main --threads 4 --iterations 500000
