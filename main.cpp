@@ -5,10 +5,14 @@
 #include <chrono>
 #include <format>
 #include "kaizen.h"
+#include <mutex>
 
 extern "C" const char* __tsan_default_options() {
   return "verbosity=1";
 }
+
+int mutex_counter = 0;
+std::mutex mutex_counter_mutex;
 
 std::pair<int, int> process_args(int argc, char* argv[]) {
     zen::cmd_args args(argv, argc);
@@ -47,6 +51,7 @@ int main(int argc, char* argv[]) {
             zen::print(std::format("| {:<17} | {:>7}|\n","Relaxed:", relaxed_counter.load()));
             zen::print(std::format("| {:<17} | {:>7}|\n","Release:", release_counter.load()));
             zen::print(std::format("| {:<17} | {:>7}|\n","Acquire:", acquire_counter.load()));
+            zen::print(std::format("| {:<17} | {:>7}|\n","Mutex:", mutex_counter));
             std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Sample every 50ms
         }
     });
@@ -71,6 +76,21 @@ int main(int argc, char* argv[]) {
             }
         });
     }
+
+
+    // Mutex-protected counter
+    for (int t = 0; t < thread_count; ++t) {
+        threads.emplace_back([&]() {
+            for (int i = 0; i < iterations; ++i) {
+                {
+                    std::lock_guard<std::mutex> lock(mutex_counter_mutex);
+                    mutex_counter++;
+                }
+                std::this_thread::yield();
+            }
+        });
+    }
+
 
     // Relaxed (memory_order_relaxed)
     for (int t = 0; t < thread_count; ++t) {
@@ -118,6 +138,7 @@ int main(int argc, char* argv[]) {
     zen::print(std::format("| {:<17} | {:>7}|\n","Relaxed:", relaxed_counter.load()));
     zen::print(std::format("| {:<17} | {:>7}|\n","Release:", release_counter.load()));
     zen::print(std::format("| {:<17} | {:>7}|\n","Acquire:", acquire_counter.load()));
+    zen::print(std::format("| {:<17} | {:>7}|\n","Mutex:", mutex_counter));
     zen::print(std::format("| {:<17} | {:>7}|\n","Expected:", expected));
     return 0;
 }
